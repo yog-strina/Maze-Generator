@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
+using Debug = UnityEngine.Debug;
 
 /*
 	MAZE GENERATOR USING THE KRUSKAL ALGORITHM
@@ -39,10 +38,6 @@ public class GenerateMaze : MonoBehaviour {
 	// contains the coordinates of the neighbour of the cell being processed
 	private int[] neighbourCell;
 
-	// Use this for initialization
-	void Start () {
-	}
-
 	// Initialize the variables used to compute and display the maze
 	public void InitializeMaze()
 	{
@@ -50,10 +45,10 @@ public class GenerateMaze : MonoBehaviour {
 		neighbourCell = new int[2];
 		edges = new Dictionary<int, List<int[]>>();
 		int k = 0; // the sets
-		for(int i = 0; i < labHeight; i++) // loops to fill the dictionary edges that contains the sets
-		{
-			for(int j = 0; j < labWidth; j++)
-			{
+		for(int i = 0; i < labHeight; i++) 		// loops to fill the dictionary edges that contains the sets
+		{										// for now there are width*length sets, each one containing
+			for(int j = 0; j < labWidth; j++)	// its number and the coordinates of 1 cell, because we haven't
+			{									// calculated anything yet
 				int[] tmpArray = new int[2];
 				List<int[]> tmpList = new List<int[]>();
 
@@ -99,7 +94,7 @@ public class GenerateMaze : MonoBehaviour {
 					neighbourCell[1] = cellCheckY-1;
 					return true;
 				}
-				// remove an index from the toCheck List so the same neighbour is not check again in futur loops
+				// remove an index from the toCheck List so the same neighbour is not check again in future loops
 				toCheck.RemoveAt(randNeighbour);
 			}
 			else if (toCheck[randNeighbour] == 1)
@@ -111,7 +106,7 @@ public class GenerateMaze : MonoBehaviour {
 					neighbourCell[1] = cellCheckY;
 					return true;
 				}
-				// remove an index from the toCheck List so the same neighbour is not check again in futur loops
+				// remove an index from the toCheck List so the same neighbour is not check again in future loops
 				toCheck.RemoveAt(randNeighbour);
 			}
 			else if (toCheck[randNeighbour] == 2)
@@ -123,7 +118,7 @@ public class GenerateMaze : MonoBehaviour {
 					neighbourCell[1] = cellCheckY+1;
 					return true;
 				}
-				// remove an index from the toCheck List so the same neighbour is not check again in futur loops
+				// remove an index from the toCheck List so the same neighbour is not check again in future loops
 				toCheck.RemoveAt(randNeighbour);
 			}
 			else if (toCheck[randNeighbour] == 3)
@@ -135,7 +130,7 @@ public class GenerateMaze : MonoBehaviour {
 					neighbourCell[1] = cellCheckY;
 					return true;
 				}
-				// remove an index from the toCheck List so the same neighbour is not check again in futur loops
+				// remove an index from the toCheck List so the same neighbour is not check again in future loops
 				toCheck.RemoveAt(randNeighbour);
 			}
 			else
@@ -245,13 +240,11 @@ public class GenerateMaze : MonoBehaviour {
 		{
 			// Instantiate the variables needed
 			InitializeMaze();
+			var stopwatchLoop = Stopwatch.StartNew();
 			// Loop to compute the maze
 			MazeLoop();
+			stopwatchLoop.Stop();
+			Debug.Log("Duration of the looping part: " + (stopwatchLoop.Elapsed.TotalMilliseconds/* * 1000000*/).ToString("0.00 ms"));
 		}
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
 	}
 }
